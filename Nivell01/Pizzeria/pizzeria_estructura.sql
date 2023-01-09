@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2022-12-01 12:29
+-- Generated: 2023-01-09 12:31
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -8,17 +8,6 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Proveïdors` (
-  `idProveïdor` INT(11) NOT NULL AUTO_INCREMENT,
-  `TLF` INT(11) NOT NULL,
-  `FAX` INT(11) NOT NULL,
-  `NIF` CHAR(8) NOT NULL,
-  PRIMARY KEY (`idProveïdor`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`proveïdor_adreça` (
   `idProveïdor` INT(11) NOT NULL AUTO_INCREMENT,
@@ -142,50 +131,21 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Empleats` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Clients` (
-  `idClients` INT(11) NOT NULL AUTO_INCREMENT,
-  `Nom` VARCHAR(45) NOT NULL,
-  `Cognom` VARCHAR(45) NOT NULL,
-  `Adreça` VARCHAR(45) NOT NULL,
-  `Codi_postal` INT(11) NOT NULL,
-  `Localitat` VARCHAR(45) NOT NULL,
-  `Província` VARCHAR(45) NOT NULL,
-  `TLF` INT(11) NOT NULL,
-  `Clients_col` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idClients`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
 CREATE TABLE IF NOT EXISTS `mydb`.`Comandes` (
-  `idComandes` INT(11) NOT NULL,
-  `Clients_idClients` INT(11) NOT NULL,
-  `Data/Hora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Tipus_comanda_idTipus_comanda` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL,
+  `clients_id` INT(11) NOT NULL,
+  `data/hora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Preu` DOUBLE NOT NULL,
-  `Productes_idProductes` INT(11) NOT NULL,
   `Botiga_idBotiga` INT(11) NOT NULL,
-  `DOM_Empleats_idEmpleats` INT(11) NULL DEFAULT NULL,
-  `Comandes_col` VARCHAR(45) NULL DEFAULT NULL,
-  `Comandes_col1` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`idComandes`, `Clients_idClients`, `Tipus_comanda_idTipus_comanda`, `Productes_idProductes`, `Botiga_idBotiga`, `DOM_Empleats_idEmpleats`),
-  INDEX `fk_Comandes_Clients1_idx` (`Clients_idClients` ASC) VISIBLE,
-  INDEX `fk_Comandes_Tipus_comanda1_idx` (`Tipus_comanda_idTipus_comanda` ASC) VISIBLE,
-  INDEX `fk_Comandes_Productes1_idx` (`Productes_idProductes` ASC) VISIBLE,
+  `empleats_id` INT(11) NULL DEFAULT NULL,
+  `tipus_comanda` ENUM('repartiment', 'domicili', 'recollir') NOT NULL,
+  PRIMARY KEY (`id`, `clients_id`, `Botiga_idBotiga`, `empleats_id`),
+  INDEX `fk_Comandes_Clients1_idx` (`clients_id` ASC) VISIBLE,
   INDEX `fk_Comandes_Botiga1_idx` (`Botiga_idBotiga` ASC) VISIBLE,
-  INDEX `fk_Comandes_Empleats1_idx` (`DOM_Empleats_idEmpleats` ASC) VISIBLE,
+  INDEX `fk_Comandes_Empleats1_idx` (`empleats_id` ASC) VISIBLE,
   CONSTRAINT `fk_Comandes_Clients1`
-    FOREIGN KEY (`Clients_idClients`)
+    FOREIGN KEY (`clients_id`)
     REFERENCES `mydb`.`Clients` (`idClients`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_Comandes_Tipus_comanda1`
-    FOREIGN KEY (`Tipus_comanda_idTipus_comanda`)
-    REFERENCES `mydb`.`Tipus_comanda` (`idTipus_comanda`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_Comandes_Productes1`
-    FOREIGN KEY (`Productes_idProductes`)
-    REFERENCES `mydb`.`Productes` (`idProductes`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Comandes_Botiga1`
@@ -194,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Comandes` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Comandes_Empleats1`
-    FOREIGN KEY (`DOM_Empleats_idEmpleats`)
+    FOREIGN KEY (`empleats_id`)
     REFERENCES `mydb`.`Empleats` (`idEmpleats`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
@@ -202,33 +162,14 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Productes` (
-  `idProductes` INT(11) NOT NULL AUTO_INCREMENT,
-  `Tipus_Producte_idTipus_Producte` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `tipus_producte` ENUM('pizza', 'hamburguesa', 'beguda') NOT NULL,
   `Nom_producte` VARCHAR(45) NOT NULL,
   `Descripció_producte` VARCHAR(45) NOT NULL,
   `Imatge` VARCHAR(75) NOT NULL,
   `Preu` DOUBLE NOT NULL,
-  `Pizza_categories_idPizza_categories` INT(11) NOT NULL,
-  PRIMARY KEY (`idProductes`, `Tipus_Producte_idTipus_Producte`, `Pizza_categories_idPizza_categories`),
-  INDEX `fk_Productes_Tipus_Producte1_idx` (`Tipus_Producte_idTipus_Producte` ASC) VISIBLE,
-  INDEX `fk_Productes_Pizza_categories1_idx` (`Pizza_categories_idPizza_categories` ASC) VISIBLE,
-  CONSTRAINT `fk_Productes_Tipus_Producte1`
-    FOREIGN KEY (`Tipus_Producte_idTipus_Producte`)
-    REFERENCES `mydb`.`Tipus_Producte` (`idTipus_Producte`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_Productes_Pizza_categories1`
-    FOREIGN KEY (`Pizza_categories_idPizza_categories`)
-    REFERENCES `mydb`.`Pizza_categories` (`idPizza_categories`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Pizza_categories` (
-  `idPizza_categories` INT(11) NOT NULL AUTO_INCREMENT,
-  `Nom` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`idPizza_categories`))
+  `categoria_pizza` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -241,49 +182,22 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Botiga` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Empleats` (
-  `idEmpleats` INT(11) NOT NULL AUTO_INCREMENT,
-  `Cognom1` VARCHAR(45) NOT NULL,
-  `Cognom2` VARCHAR(45) NOT NULL,
-  `Nom` VARCHAR(45) NOT NULL,
-  `Botiga_idBotiga` INT(11) NOT NULL,
-  `NIF` VARCHAR(9) NOT NULL,
-  `TLF` INT(9) NOT NULL,
-  `Tipus_empleat_idTipus_empleat` INT(11) NOT NULL,
-  PRIMARY KEY (`idEmpleats`, `Botiga_idBotiga`, `Tipus_empleat_idTipus_empleat`),
-  INDEX `fk_Empleats_Botiga1_idx` (`Botiga_idBotiga` ASC) VISIBLE,
-  INDEX `fk_Empleats_Tipus_empleat1_idx` (`Tipus_empleat_idTipus_empleat` ASC) VISIBLE,
-  CONSTRAINT `fk_Empleats_Botiga1`
-    FOREIGN KEY (`Botiga_idBotiga`)
-    REFERENCES `mydb`.`Botiga` (`idBotiga`)
+CREATE TABLE IF NOT EXISTS `mydb`.`Comandes_has_Productes` (
+  `Comandes_idComandes` INT(11) NOT NULL,
+  `Productes_idProductes` INT(11) NOT NULL,
+  PRIMARY KEY (`Comandes_idComandes`, `Productes_idProductes`),
+  INDEX `fk_Comandes_has_Productes_Productes1_idx` (`Productes_idProductes` ASC) VISIBLE,
+  INDEX `fk_Comandes_has_Productes_Comandes1_idx` (`Comandes_idComandes` ASC) VISIBLE,
+  CONSTRAINT `fk_Comandes_has_Productes_Comandes1`
+    FOREIGN KEY (`Comandes_idComandes`)
+    REFERENCES `mydb`.`Comandes` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_Empleats_Tipus_empleat1`
-    FOREIGN KEY (`Tipus_empleat_idTipus_empleat`)
-    REFERENCES `mydb`.`Tipus_empleat` (`idTipus_empleat`)
+  CONSTRAINT `fk_Comandes_has_Productes_Productes1`
+    FOREIGN KEY (`Productes_idProductes`)
+    REFERENCES `mydb`.`Productes` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Tipus_comanda` (
-  `idTipus_comanda` INT(11) NOT NULL,
-  `Nom_tipus` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idTipus_comanda`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Tipus_Producte` (
-  `idTipus_Producte` INT(11) NOT NULL AUTO_INCREMENT,
-  `Tipus_producte` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idTipus_Producte`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Tipus_empleat` (
-  `idTipus_empleat` INT(11) NOT NULL AUTO_INCREMENT,
-  `Tipus_empleat` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idTipus_empleat`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 

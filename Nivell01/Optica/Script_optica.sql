@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2022-12-01 11:43
+-- Generated: 2023-01-09 12:12
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -9,30 +9,19 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`Proveïdors` (
-  `idProveïdor` INT(11) NOT NULL AUTO_INCREMENT,
-  `TLF` INT(11) NOT NULL,
-  `FAX` INT(11) NOT NULL,
-  `NIF` CHAR(8) NOT NULL,
-  PRIMARY KEY (`idProveïdor`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`proveïdor_adreça` (
-  `idProveïdor` INT(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `mydb`.`adreça` (
+  `idAdreça` INT(11) NOT NULL AUTO_INCREMENT,
   `carrer` VARCHAR(45) NOT NULL,
   `num_carrer` INT(11) NOT NULL,
-  `pis` INT(11) NOT NULL,
-  `porta` INT(11) NOT NULL,
+  `pis` VARCHAR(10) NOT NULL,
+  `porta` VARCHAR(10) NOT NULL,
   `ciutat` VARCHAR(45) NOT NULL,
   `codi_postal` VARCHAR(45) NOT NULL,
   `país` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idProveïdor`),
-  INDEX `idProveïdor` (`idProveïdor` ASC) VISIBLE,
+  PRIMARY KEY (`idAdreça`),
+  INDEX `idProveïdor` (`idAdreça` ASC) VISIBLE,
   CONSTRAINT `fk_proveïdor_adreça_Proveïdor`
-    FOREIGN KEY (`idProveïdor`)
+    FOREIGN KEY (`idAdreça`)
     REFERENCES `mydb`.`Proveïdors` (`idProveïdor`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
@@ -81,7 +70,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Tipus_montura` (
   `idTipus_montura` INT(11) NOT NULL AUTO_INCREMENT,
-  `Nom_montura` VARCHAR(45) NOT NULL,
+  `Nom_montura` ENUM('METÀLICA', 'PASTA') NOT NULL,
   PRIMARY KEY (`idTipus_montura`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
